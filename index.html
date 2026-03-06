@@ -306,74 +306,46 @@
         </div>
       </div>
 
-      <!-- RIGHT: demo code + textarea -->
+      <!-- RIGHT: strategy contract reference -->
       <div class="panel green-top">
-        <h2 class="green">⚡ Your Strategy</h2>
+        <h2 class="green">&#x1F40D; Strategy Contract</h2>
 
-        <label>Demo Code — copy into your .py file</label>
-        <div class="demo-code-block" id="demo-block"><button class="demo-copy-btn" onclick="copyDemo()">Copy</button><span class="cm"># ─── strategy.py ─────────────────────────────────────────
-# IMC Prosperity · Round 1 · PEARLS
-# Upload this file or paste your own strategy below.
-# ─────────────────────────────────────────────────────────</span>
+        <div class="demo-code-block"><span class="cm"># Your .py file must define this function:</span>
 
 <span class="kw">def</span> <span class="fn">strategy</span>(row, position, step):
-    <span class="cm">"""
-    Called at every timestep.
+    <span class="cm"># row      -- dict, one timestep of order-book data
+    # position -- int,  your current PEARLS holding (max ±20)
+    # step     -- int,  timestep index (0-based)
 
-    Parameters
-    ----------
-    row      : dict  ─ current order-book snapshot
-      row["bid_price_1"]   best bid price
-      row["bid_volume_1"]  best bid volume
-      row["ask_price_1"]   best ask price
-      row["ask_volume_1"]  best ask volume
-      row["bid_price_2/3"] / row["ask_price_2/3"]  depth
-      row["bid_volume_2/3"] / row["ask_volume_2/3"]
-    position : int   ─ your current PEARLS position  (range ±20)
-    step     : int   ─ timestep index (0-based)
-
-    Returns
-    -------
-    dict  { "bid": int, "ask": int, "bid_qty": int, "ask_qty": int }
-    """</span>
+    # Example: simple ±1 market-making around mid</span>
     best_bid = row[<span class="st">"bid_price_1"</span>]
     best_ask = row[<span class="st">"ask_price_1"</span>]
-    mid      = (best_bid + best_ask) / <span class="num">2</span>
+    mid = (best_bid + best_ask) / <span class="num">2</span>
 
-    <span class="cm"># Simple market-making: quote ±1 tick around mid</span>
     <span class="kw">return</span> {
-        <span class="st">"bid"</span>:     <span class="fn">int</span>(mid) - <span class="num">1</span>,
-        <span class="st">"ask"</span>:     <span class="fn">int</span>(mid) + <span class="num">1</span>,
-        <span class="st">"bid_qty"</span>: <span class="num">3</span>,
-        <span class="st">"ask_qty"</span>: <span class="num">3</span>,
+        <span class="st">"bid"</span>:     <span class="fn">int</span>(mid) - <span class="num">1</span>,   <span class="cm"># limit buy price</span>
+        <span class="st">"ask"</span>:     <span class="fn">int</span>(mid) + <span class="num">1</span>,   <span class="cm"># limit sell price</span>
+        <span class="st">"bid_qty"</span>: <span class="num">3</span>,             <span class="cm"># units to buy</span>
+        <span class="st">"ask_qty"</span>: <span class="num">3</span>,             <span class="cm"># units to sell</span>
     }
 </div>
 
-        <label>Or Paste / Edit Strategy Here</label>
-        <textarea id="strategy-code" spellcheck="false">def strategy(row, position, step):
-    best_bid = row["bid_price_1"]
-    best_ask = row["ask_price_1"]
-    mid      = (best_bid + best_ask) / 2
-
-    return {
-        "bid":     int(mid) - 1,
-        "ask":     int(mid) + 1,
-        "bid_qty": 3,
-        "ask_qty": 3,
-    }</textarea>
         <div id="strategy-error"></div>
 
-        <div class="hint-box">
-          <strong style="color:var(--accent2)">Row fields:</strong>&nbsp;
-          <code>bid_price_1</code> <code>bid_volume_1</code> <code>ask_price_1</code> <code>ask_volume_1</code>
-          &nbsp;·&nbsp; depth: <code>bid_price_2</code> <code>bid_price_3</code> <code>ask_price_2</code> <code>ask_price_3</code><br>
-          <code>bid_volume_2/3</code> &nbsp;<code>ask_volume_2/3</code><br>
-          <strong style="color:var(--accent2)">Return:</strong>&nbsp;
-          <code>bid</code> <code>ask</code> <code>bid_qty</code> <code>ask_qty</code>
-          &nbsp;·&nbsp; position capped at <strong style="color:var(--text)">±20</strong>
+        <div class="hint-box" style="margin-top:14px;">
+          <strong style="color:var(--accent2)">Available row keys</strong><br>
+          <code>bid_price_1</code> &nbsp;<code>bid_volume_1</code> &nbsp;&#8212; best bid<br>
+          <code>ask_price_1</code> &nbsp;<code>ask_volume_1</code> &nbsp;&#8212; best ask<br>
+          <code>bid_price_2</code> &nbsp;<code>bid_price_3</code> &nbsp;&#8212; deeper bids<br>
+          <code>ask_price_2</code> &nbsp;<code>ask_price_3</code> &nbsp;&#8212; deeper asks<br>
+          <code>bid_volume_2/3</code> &nbsp;<code>ask_volume_2/3</code><br><br>
+          <strong style="color:var(--accent2)">Supported Python builtins</strong><br>
+          <code>int()</code> &nbsp;<code>abs()</code> &nbsp;<code>min()</code> &nbsp;<code>max()</code> &nbsp;<code>round()</code> &nbsp;<code>float()</code><br><br>
+          <strong style="color:var(--accent2)">Rules</strong><br>
+          Position capped at <strong style="color:var(--text)">&#177;20</strong>. Oversized orders are trimmed automatically.
         </div>
 
-        <button class="btn btn-primary" onclick="startSimulation()">▶ RUN SIMULATION</button>
+        <button class="btn btn-primary" onclick="startSimulation()">&#9654; RUN SIMULATION</button>
       </div>
 
     </div>
@@ -452,6 +424,7 @@
 //  STATE
 // ════════════════════════════════════════════════════════════════════════════
 let csvFiles = {}, dayOrder = [];
+let strategySource = '';
 let currentDayIdx = 0, currentStep = 0;
 let cash = 0, position = 0;
 let pnlHistory = [], posHistory = [], trades = [];
@@ -608,8 +581,13 @@ pydz.addEventListener('drop',e=>{
 
 function loadPy(src,fname) {
   const el=document.getElementById('py-loaded');
-  if(!/def\s+strategy\s*\(/.test(src)){el.style.color='var(--danger)';el.textContent='✗ No strategy() found';return;}
-  document.getElementById('strategy-code').value=src.trim();
+  if(!/def\s+strategy\s*\(/.test(src)){
+    el.style.color='var(--danger)';
+    el.textContent='✗ No strategy() function found';
+    strategySource='';
+    return;
+  }
+  strategySource=src.trim();
   el.style.color='var(--purple)';
   el.textContent='✓ Loaded: '+fname;
   document.getElementById('strategy-error').style.display='none';
@@ -619,13 +597,32 @@ function loadPy(src,fname) {
 //  PYTHON → JS TRANSPILER
 // ════════════════════════════════════════════════════════════════════════════
 function py2js(src) {
-  // ── Step 1: strip docstrings and inline comments ──────────────────────────
-  src = src
-    .replace(/"""[\s\S]*?"""/g, '')
-    .replace(/'''[\s\S]*?'''/g, '')
-    .replace(/#.*/g, '');
+  // Strip triple-quoted docstrings and line comments
+  src = src.replace(/"{3}[\s\S]*?"{3}/g, '');
+  src = src.replace(/'{3}[\s\S]*?'{3}/g, '');
+  src = src.replace(/#.*/g, '');
 
-  // ── Step 2: keyword & builtin replacements ────────────────────────────────
+  // Convert Python inline ternary:  VAL if COND else ALT
+  // Process line-by-line to preserve indentation correctly.
+  // Only triggers on assignment lines that contain the pattern.
+  src = src.split('\n').map(line => {
+    const lead = line.match(/^(\s*)/)[1];
+    const trimmed = line.trimStart();
+    if (/^[A-Za-z_]\w*\s*=/.test(trimmed) && /\s+if\s+.+\s+else\s+/.test(trimmed)) {
+      const m = trimmed.match(/^(.+?)\s+if\s+(.+?)\s+else\s+(.+)$/);
+      if (m) {
+        const eqIdx = m[1].indexOf('=');
+        if (eqIdx !== -1) {
+          const varPart = m[1].slice(0, eqIdx + 1);
+          const valExpr = m[1].slice(eqIdx + 1).trim();
+          return lead + varPart + ' (' + m[2].trim() + ' ? ' + valExpr + ' : ' + m[3].trim() + ')';
+        }
+      }
+    }
+    return line;
+  }).join('\n');
+
+  // Token replacements
   src = src
     .replace(/\bTrue\b/g,  'true')
     .replace(/\bFalse\b/g, 'false')
@@ -639,73 +636,60 @@ function py2js(src) {
     .replace(/\bmin\s*\(/g,   'Math.min(')
     .replace(/\bmax\s*\(/g,   'Math.max(')
     .replace(/\bround\s*\(/g, 'Math.round(')
-    .replace(/\blen\s*\(/g,   'Object.keys(')
     .replace(/\bprint\s*\(/g, 'console.log(')
     .replace(/row\[["'](\w+)["']\]/g, 'row.$1')
     .replace(/\belif\b/g, 'else if');
 
-  // ── Step 3: line-by-line — indent→braces + auto var declarations ──────────
-  const lines    = src.split('\n');
-  const out      = [];
-  const declared = new Set();   // track variable names we've already declared
+  // Line-by-line: indentation -> braces, auto-declare variables with let
+  const lines = src.split('\n');
+  const out = [];
   const indStack = [0];
-
-  // Regex: a plain assignment like  "  foo = expr"
-  // Must NOT match ==, !=, <=, >=, +=, -=, *=, /=
-  const assignRe = /^(\s*)([A-Za-z_]\w*)\s*=(?!=)(?!>)/;
+  const declared = new Set();
 
   for (let i = 0; i < lines.length; i++) {
     const raw = lines[i].trimEnd();
     if (!raw.trim()) { out.push(''); continue; }
-
-    const indent  = raw.length - raw.trimStart().length;
+    const indent = raw.length - raw.trimStart().length;
     const content = raw.trimStart();
 
-    // Close any blocks that have ended (indent decreased)
     while (indStack.length > 1 && indStack[indStack.length - 1] >= indent) {
       indStack.pop();
       out.push(' '.repeat(indStack[indStack.length - 1]) + '}');
     }
 
-    // Block-opening line? (ends with ':' after a control/def keyword)
-    const isBlockOpen = /^(def |if |else if |else\s*$|else\s*:|for |while )\S?/.test(content)
-                     && raw.trimEnd().endsWith(':');
+    const isBlockOpener =
+      /^(def |if |else if |else\s*$|else\s*:|for |while )/.test(content)
+      && raw.trimEnd().endsWith(':');
 
-    if (isBlockOpen) {
-      let line = raw.trimEnd().slice(0, -1); // strip trailing ':'
-      // def → function
-      line = line.replace(/^(\s*)def\s+(\w+)\s*\(([^)]*)\)/, '$1function $2($3)');
-      // bare else → else
+    if (isBlockOpener) {
+      let line = raw.trimEnd().slice(0, -1);
+      line = line.replace(/^(\s*)def\s+(\w+)\s*\(([^)]*)\)\s*$/, '$1function $2($3)');
       line = line.replace(/^(\s*)else\s*$/, '$1else');
+      line = line.replace(/^(\s*)(if|else if)\s+(.+)$/, (_, sp, kw, cond) => {
+        cond = cond.trim();
+        if (!cond.startsWith('(')) cond = '(' + cond + ')';
+        return sp + kw + ' ' + cond;
+      });
       out.push(line + ' {');
       indStack.push(indent + 1);
     } else {
-      // Auto-declare first assignment of each variable name as 'var'
-      const m = raw.match(assignRe);
-      if (m) {
-        const varName = m[2];
-        if (!declared.has(varName)) {
-          declared.add(varName);
-          // Insert 'var ' before the variable name
-          out.push(raw.replace(assignRe, '$1var $2 ='));
-          continue;
-        }
+      const m = raw.match(/^(\s*)([A-Za-z_]\w*)\s*=[^=]/);
+      if (m && !declared.has(m[2]) &&
+          !/^(let|const|var|return|if|else|for|while|function|true|false|null)$/.test(m[2])) {
+        declared.add(m[2]);
+        out.push(raw.replace(/^(\s*)([A-Za-z_]\w*)\s*=/, '$1let $2 ='));
+      } else {
+        out.push(raw);
       }
-      out.push(raw);
     }
   }
-
-  // Close any still-open blocks
-  while (indStack.length > 1) {
-    indStack.pop();
-    out.push(' '.repeat(indStack[indStack.length - 1]) + '}');
-  }
-
+  while (indStack.length > 1) { indStack.pop(); out.push('}'); }
   return out.join('\n');
 }
 
+
 function compileStrategy(){
-  const src=document.getElementById('strategy-code').value;
+  const src=strategySource;
   const err=document.getElementById('strategy-error');
   try{
     const js=src.includes('def strategy')?py2js(src):src;
@@ -724,6 +708,7 @@ function compileStrategy(){
 // ════════════════════════════════════════════════════════════════════════════
 function startSimulation(){
   if(!dayOrder.length){alert('Upload at least one CSV file.');return;}
+  if(!strategySource){alert('Upload a Python strategy .py file.');return;}
   if(!compileStrategy())return;
   cash=0;position=0;pnlHistory=[];posHistory=[];trades=[];
   currentDayIdx=0;currentStep=0;completedSteps=0;
@@ -1014,31 +999,6 @@ function updateCharts(){
   posChart.update('none');
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-//  COPY DEMO
-// ════════════════════════════════════════════════════════════════════════════
-function copyDemo(){
-  const plain=`# ─── strategy.py ─────────────────────────────────────────
-# IMC Prosperity · Round 1 · PEARLS
-
-def strategy(row, position, step):
-    best_bid = row["bid_price_1"]
-    best_ask = row["ask_price_1"]
-    mid      = (best_bid + best_ask) / 2
-
-    # Simple market-making: quote ±1 tick around mid
-    return {
-        "bid":     int(mid) - 1,
-        "ask":     int(mid) + 1,
-        "bid_qty": 3,
-        "ask_qty": 3,
-    }
-`;
-  navigator.clipboard.writeText(plain).then(()=>{
-    const btn=document.querySelector('.demo-copy-btn');
-    btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1500);
-  });
-}
 </script>
 </body>
 </html>
