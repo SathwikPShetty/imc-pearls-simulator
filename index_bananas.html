@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BANANAS BSVK Tester</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;700;800&display=swap');
+:root{--bg:#07111d;--panel:#102037;--panel2:#162949;--line:#244a72;--txt:#e7eef7;--muted:#7d90ac;--cyan:#37c8ff;--green:#42e59d;--orange:#ff9457;--red:#ff5f78;--gold:#f3d25e}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,rgba(55,200,255,.14),transparent 25%),linear-gradient(180deg,#07111d,#050c15);color:var(--txt);font-family:'Space Mono',monospace}body:before{content:'';position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(55,200,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(55,200,255,.03) 1px,transparent 1px);background-size:40px 40px}.wrap{max-width:1420px;margin:0 auto;padding:24px;position:relative;z-index:1}header{text-align:center;padding:32px 0 24px;border-bottom:1px solid rgba(55,200,255,.18);margin-bottom:20px}.eyebrow{font-size:.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}h1{margin:0;font-family:'Syne',sans-serif;font-size:clamp(2.3rem,6vw,4rem);line-height:1;background:linear-gradient(120deg,var(--cyan),var(--green),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.sub{max-width:900px;margin:12px auto 0;color:var(--muted);font-size:.72rem;line-height:1.8}.badges{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:14px}.badge{padding:6px 12px;border-radius:999px;font-size:.6rem;text-transform:uppercase;letter-spacing:1.4px;border:1px solid rgba(255,255,255,.12)}.bc{color:var(--cyan);background:rgba(55,200,255,.08);border-color:rgba(55,200,255,.3)}.bg{color:var(--green);background:rgba(66,229,157,.08);border-color:rgba(66,229,157,.3)}.by{color:var(--gold);background:rgba(243,210,94,.08);border-color:rgba(243,210,94,.3)}.box,.panel,.chart,.table-panel{background:rgba(16,32,55,.94);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(0,0,0,.18)}.box{padding:16px 18px;margin-bottom:18px;color:var(--muted);font-size:.72rem;line-height:1.8}.box strong{color:var(--cyan)}.grid{display:grid;grid-template-columns:1.08fr .92fr;gap:18px}.panel{padding:20px;position:relative;overflow:hidden}.panel:before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,var(--cyan),transparent 55%)}.panel h2,.chart h3,.table-panel h3{margin:0 0 14px;font-size:.76rem;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);font-family:'Syne',sans-serif}.uploads,.bots,.stats,.charts,.book{display:grid;gap:12px}.uploads{grid-template-columns:repeat(3,minmax(0,1fr))}.bots{grid-template-columns:repeat(2,minmax(0,1fr))}.zone{border:1.5px dashed rgba(55,200,255,.28);background:rgba(55,200,255,.05);border-radius:14px;padding:18px;text-align:center;cursor:pointer}.zone.trade{border-color:rgba(66,229,157,.3);background:rgba(66,229,157,.05)}.zone.py{border-color:rgba(243,210,94,.3);background:rgba(243,210,94,.05)}.zone input{display:none}.zone p{margin:0;color:var(--muted);font-size:.68rem;line-height:1.8}.zone strong{color:var(--txt)}.loaded{margin-top:8px;font-size:.68rem;font-weight:700}#files-loaded{color:var(--cyan)}#fair-loaded{color:var(--green)}#py-loaded{color:var(--gold)}.bot{border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(22,41,73,.88);padding:14px}.bn{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;margin-bottom:4px}.mm1 .bn{color:var(--cyan)}.mm2 .bn{color:var(--green)}.mom .bn{color:var(--orange)}.rev .bn{color:var(--red)}.bt{font-size:.6rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}.bd{font-size:.68rem;line-height:1.7;color:var(--muted)}.locked,.hint,.error{margin-top:14px;border-radius:12px;padding:12px 14px;font-size:.68rem;line-height:1.7}.locked{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.06);color:var(--muted)}.hint{background:rgba(255,148,87,.05);border:1px solid rgba(255,148,87,.22);color:var(--muted)}.hint code{color:var(--cyan);background:rgba(55,200,255,.08);padding:1px 6px;border-radius:6px}.demo{border-radius:14px;border:1px solid rgba(255,255,255,.06);background:#0a1321;padding:16px;white-space:pre;overflow-x:auto;font-size:.7rem;line-height:1.7}.kw{color:#ff87ce}.fn{color:#7ee787}.st{color:#f2cc60}.cm{color:#7587a7;font-style:italic}.num{color:#b78cff}.error{display:none;background:rgba(255,95,120,.08);border:1px solid rgba(255,95,120,.28);color:#ff9ead}.btn{border:0;border-radius:12px;padding:12px 16px;cursor:pointer;font-family:inherit;font-size:.72rem;letter-spacing:1.2px;text-transform:uppercase}.primary{background:linear-gradient(135deg,var(--cyan),#1f8bff);color:#06101a;font-weight:700;width:100%;margin-top:16px}.green{background:linear-gradient(135deg,var(--green),#16c47f);color:#06101a;font-weight:700}.secondary{background:var(--panel2);color:var(--txt);border:1px solid rgba(255,255,255,.08)}.danger{background:rgba(255,95,120,.08);color:var(--red);border:1px solid rgba(255,95,120,.24)}#sim-view{display:none}.banner{display:none;margin-bottom:18px;padding:20px;border-radius:16px;border:1px solid rgba(66,229,157,.24);background:linear-gradient(135deg,rgba(66,229,157,.08),rgba(55,200,255,.08));text-align:center}.final{font-family:'Syne',sans-serif;font-size:3rem;line-height:1;font-weight:800}.positive{color:var(--green)}.negative{color:var(--red)}.neutral{color:var(--txt)}.tabs,.controls{display:flex;flex-wrap:wrap;gap:8px}.tabs{margin-bottom:14px}.tab{border:1px solid rgba(255,255,255,.08);background:var(--panel2);color:var(--muted);border-radius:999px;padding:7px 12px;cursor:pointer;font-size:.66rem}.tab.active{color:var(--cyan);border-color:rgba(55,200,255,.34);background:rgba(55,200,255,.08)}.controls{align-items:center;margin-bottom:12px}.controls input{width:82px;padding:9px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:var(--panel2);color:var(--txt);font-family:inherit}.bar{height:4px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;margin-bottom:16px}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--green))}.stats{grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:16px}.stat{border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(16,32,55,.95);padding:14px}.sl{font-size:.58rem;text-transform:uppercase;letter-spacing:1.8px;color:var(--muted);margin-bottom:8px}.sv{font-family:'Syne',sans-serif;font-size:1.42rem;line-height:1;font-weight:800}.charts{grid-template-columns:2fr 1fr;margin-bottom:16px}.chart,.table-panel{padding:18px}.book{grid-template-columns:1fr 1fr}.side h4{margin:0 0 10px;font-size:.66rem;text-transform:uppercase;letter-spacing:2px}.asks h4{color:var(--red)}.bids h4{color:var(--green)}.row{display:grid;grid-template-columns:78px 1fr 56px;gap:10px;align-items:center;padding:7px 10px;border-radius:10px;font-size:.66rem;margin-bottom:6px}.row.ask{background:rgba(255,95,120,.07)}.row.bid{background:rgba(66,229,157,.07)}.row.student{outline:1px solid rgba(243,210,94,.42)}.price{font-weight:700}.ask .price{color:#ff9ead}.bid .price{color:#90f2c4}.owner{color:var(--muted)}.qty{text-align:right}.scroll{overflow-x:auto;max-height:320px;overflow-y:auto}table{width:100%;border-collapse:collapse;font-size:.66rem}th,td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);text-align:left}th{font-size:.56rem;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:400}.student-row{background:rgba(243,210,94,.08)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}.d1{background:var(--cyan)}.d2{background:var(--green)}.d3{background:var(--orange)}.d4{background:var(--red)}.ds{background:var(--gold)}.dm{background:#8ea4c4}@media (max-width:1080px){.grid,.charts,.book{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:760px){.uploads,.bots,.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="eyebrow">IMC Prosperity / BANANAS Backtest Lab</div>
+<h1>BANANAS BSVK TESTER</h1>
+<div class="sub">Replay round-2 BANANAS books, benchmark a candidate strategy against four competitive bots tuned to the BANANAS analysis, and expose the latest executed BANANAS trade in real time from the simulator itself.</div>
+<div class="badges"><span class="badge bc">Round 2 Days -1 / 0 / 1</span><span class="badge bg">Realtime Sim Trades</span><span class="badge by">4 Competitive Bots</span></div>
+</header>
+<div id="setup-view">
+<div class="box"><strong>How it works:</strong> upload BANANAS price files and a Python strategy containing <code>strategy(row, position, step)</code>. The tester uses a hidden internal fair-value model based on the BANANAS book, and exposes the latest executed BANANAS trade as <code>last_trade_price</code> and <code>last_trade_qty</code> from actual simulated executions. PnL is scored as <strong>Cash + Position * Hidden Fair</strong>.</div>
+<div class="grid">
+<div class="panel">
+<h2>Upload And Bots</h2>
+<div class="uploads">
+<div class="zone" id="drop-zone" onclick="document.getElementById('csv-input').click()"><p><strong>Price CSV Files</strong><br>Upload <code>prices_round_2_day_-1.csv</code>, <code>..._0.csv</code>, <code>..._1.csv</code>.</p><div class="loaded" id="files-loaded"></div><input type="file" id="csv-input" multiple accept=".csv"></div>
+<div class="zone py" id="py-drop-zone" onclick="document.getElementById('py-input').click()"><p><strong>Candidate Strategy</strong><br>Upload a Python file defining <code>strategy(row, position, step)</code>.</p><div class="loaded" id="py-loaded"></div><input type="file" id="py-input" accept=".py"></div>
+</div>
+<div class="bots">
+<div class="bot mm1"><div class="bn">MM Alpha</div><div class="bt">Defensive Maker</div><div class="bd">Tight quotes around hidden fair, microprice leaning, and strong inventory control.</div></div>
+<div class="bot mm2"><div class="bn">MM Beta</div><div class="bt">Pressure Maker</div><div class="bd">Larger market maker that reacts aggressively to imbalance, drift, and hidden fair-value dislocation.</div></div>
+<div class="bot mom"><div class="bn">Momentum Hawk</div><div class="bt">Fair-Drift Taker</div><div class="bd">Crosses the spread when hidden fair and short-term pressure point the same way.</div></div>
+<div class="bot rev"><div class="bn">Reversion Owl</div><div class="bt">Mean-Reversion Taker</div><div class="bd">Fades overshoots versus hidden fair and the rolling BANANAS anchor.</div></div>
+</div>
+<div class="locked">This tester expects the round-2 day <code>-1</code>, <code>0</code>, and <code>1</code> price files. Testers do not upload trade CSVs. The <code>last_trade_*</code> fields are generated live from simulated executions.</div>
+</div>
+<div class="panel">
+<h2>Strategy Contract</h2>
+<div class="demo"><span class="cm"># Your .py file must define:</span>
+
+<span class="kw">def</span> <span class="fn">strategy</span>(row, position, step):
+    <span class="cm"># row      -- BANANAS order book snapshot
+# position -- your current BANANAS inventory
+# step     -- integer timestep index</span>
+
+    best_bid = row[<span class="st">"bid_price_1"</span>]
+    best_ask = row[<span class="st">"ask_price_1"</span>]
+
+    <span class="kw">return</span> {
+        <span class="st">"bid"</span>: best_bid,
+        <span class="st">"ask"</span>: best_ask,
+        <span class="st">"bid_qty"</span>: <span class="num">2</span>,
+        <span class="st">"ask_qty"</span>: <span class="num">2</span>,
+    }</div>
+<div class="error" id="strategy-error"></div>
+<div class="hint"><strong style="color:var(--orange)">Useful row keys</strong><br><code>timestamp</code> <code>mid_price</code> <code>bid_price_1</code> <code>bid_volume_1</code> <code>ask_price_1</code> <code>ask_volume_1</code> <code>bid_price_2</code> <code>bid_volume_2</code> <code>bid_price_3</code> <code>bid_volume_3</code> <code>ask_price_2</code> <code>ask_volume_2</code> <code>ask_price_3</code> <code>ask_volume_3</code> <code>hidden_fair</code> <code>last_trade_price</code> <code>last_trade_qty</code> <code>last_trade_timestamp</code><br><br><strong style="color:var(--orange)">Trade source</strong><br><code>last_trade_*</code> updates only when the simulator itself executes a trade in the shared book. There is no uploaded or preloaded trade tape.<br><br><strong style="color:var(--orange)">Python builtins supported</strong><br><code>int()</code> <code>float()</code> <code>abs()</code> <code>min()</code> <code>max()</code> <code>round()</code><br>Orders that exceed the <code>+/-20</code> student limit are trimmed automatically.</div>
+<button class="btn primary" onclick="startSimulation()">Run BANANAS Backtest</button>
+</div>
+</div>
+</div>
+<div id="sim-view">
+<div class="banner" id="final-banner"><h2>Backtest Complete</h2><div class="final neutral" id="final-pnl-display">0.00</div><div class="sub">Student score shown as cash plus inventory marked to hidden BANANAS fair value.</div></div>
+<div class="tabs" id="day-tabs"></div>
+<div class="controls"><button class="btn green" id="run-btn" onclick="runAll()">Run All</button><button class="btn secondary" onclick="stepOnce()">Step</button><button class="btn danger" onclick="resetSim()">Reset</button><label style="font-size:.66rem;color:var(--muted);margin-left:auto">Delay (ms)</label><input type="number" id="speed-input" value="0" min="0" max="2000"></div>
+<div class="bar"><div class="fill" id="progress-fill"></div></div>
+<div class="error" id="sim-error"></div>
+<div class="stats"><div class="stat"><div class="sl">Student PnL</div><div class="sv neutral" id="stat-pnl">0.00</div></div><div class="stat"><div class="sl">Cash</div><div class="sv neutral" id="stat-cash">0.00</div></div><div class="stat"><div class="sl">Position</div><div class="sv neutral" id="stat-pos">0</div></div><div class="stat"><div class="sl">Hidden Fair</div><div class="sv neutral" id="stat-fair">-</div></div><div class="stat"><div class="sl">Last Trade Px</div><div class="sv neutral" id="stat-last-trade-price">-</div></div><div class="stat"><div class="sl">Last Trade Qty</div><div class="sv neutral" id="stat-last-trade-qty">-</div></div><div class="stat"><div class="sl">Progress</div><div class="sv neutral" id="stat-step">0 / 0</div></div></div>
+<div class="charts"><div class="chart"><h3>PnL Over Time</h3><canvas id="pnl-chart" height="180"></canvas></div><div class="chart"><h3>Position Over Time</h3><canvas id="pos-chart" height="180"></canvas></div></div>
+<div class="table-panel"><h3>Competition Board</h3><div class="scroll"><table><thead><tr><th>Agent</th><th>Role</th><th>PnL</th><th>Position</th><th>Cash</th><th>Fills</th><th>Qty</th></tr></thead><tbody id="competition-board-body"></tbody></table></div></div>
+<div class="panel" style="margin-top:16px"><h2>Shared Order Book - BANANAS</h2><div class="book"><div class="side asks"><h4>Ask Side</h4><div id="book-asks"></div></div><div class="side bids"><h4>Bid Side</h4><div id="book-bids"></div></div></div></div>
+<div class="table-panel" style="margin-top:16px"><h3>Student Trade Log</h3><div class="scroll"><table><thead><tr><th>Day</th><th>Timestamp</th><th>Side</th><th>Price</th><th>Qty</th><th>Counterparty</th><th>Cash d</th><th>Position</th><th>PnL</th></tr></thead><tbody id="trade-log-body"></tbody></table></div></div>
+<button class="btn secondary" style="margin-top:18px" onclick="resetSim()">Back To Setup</button>
+</div>
+</div>
+<script src="sim.js"></script>
+</body>
+</html>
